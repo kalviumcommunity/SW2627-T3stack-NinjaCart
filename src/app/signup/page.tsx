@@ -39,11 +39,11 @@ export default function SignUp() {
       return;
     }
 
-    console.log("Account created:", data);
-
-    setLoading(false);
-
-    router.push("/dashboard");
+    if (data.user.role === "FARMER") {
+      router.push("/farmer");
+    } else {
+      router.push("/retailer");
+    }
   }
 
   return (
