@@ -34,11 +34,11 @@ export default function Login() {
       return;
     }
 
-    console.log("Logged in:", data);
-
-    setLoading(false);
-
-    router.push("/dashboard");
+    if (data.user.role === "FARMER") {
+      router.push("/farmer");
+    } else {
+      router.push("/retailer");
+    }
   }
 
   return (
