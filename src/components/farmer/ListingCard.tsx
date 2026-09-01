@@ -30,7 +30,7 @@ export default function ListingCard({
           width={500}
           height={300}
           className="h-48 w-full object-cover"
-        />
+        /> 
 
         <div className="p-6">
           <h3 className="text-lg font-semibold">

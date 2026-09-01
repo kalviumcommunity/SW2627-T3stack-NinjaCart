@@ -12,6 +12,7 @@ import {
 import { CreateProduct } from "@/actions/product/create-product";
 import type { SubmitEvent } from "react";
 import { useRouter } from "next/navigation";
+import { CldUploadWidget } from "next-cloudinary";
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -29,6 +30,11 @@ export default function NewProductPage() {
 
     if (loading) return;
 
+    if (!imageURL) {
+      setError("Please upload a product image.");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
@@ -41,12 +47,13 @@ export default function NewProductPage() {
         description,
         imageURL,
       });
-      router.push("/farmer/products");
+
+      router.push("/farmer");
     } catch (error) {
-      console.error("Failed to create product: ", error);
+      console.error("Failed to create product:", error);
 
       setError(
-        error instanceof Error ? error.message : "failed to create product.",
+        error instanceof Error ? error.message : "Failed to create product.",
       );
     } finally {
       setLoading(false);
@@ -131,16 +138,34 @@ export default function NewProductPage() {
         </div>
 
         <div>
-          <label className="font-medium">Image URL</label>
+          <label className="font-medium">Product Image</label>
 
-          <input
-            type="url"
-            value={imageURL}
-            onChange={(e) => setImageUrl(e.target.value)}
-            required
-            className="mt-2 w-full rounded-md border px-3 py-2"
-            placeholder="https://example.com/image.jpg"
-          />
+          <div className="mt-2">
+            <CldUploadWidget
+              uploadPreset="ninjacart_products"
+              onSuccess={(result) => {
+                if (
+                  result.info &&
+                  typeof result.info !== "string" &&
+                  "secure_url" in result.info
+                ) {
+                  setImageUrl(result.info.secure_url);
+                }
+              }}
+            >
+              {({ open }) => (
+                <Button type="button" onClick={() => open()}>
+                  {imageURL ? "Change Image" : "Upload Image"}
+                </Button>
+              )}
+            </CldUploadWidget>
+          </div>
+
+          {imageURL && (
+            <p className="mt-2 text-sm text-muted-foreground">
+              Image uploaded successfully.
+            </p>
+          )}
         </div>
 
         {error && <p className="text-sm text-red-500">{error}</p>}
