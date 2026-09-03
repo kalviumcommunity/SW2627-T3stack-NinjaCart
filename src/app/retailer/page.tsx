@@ -1,4 +1,3 @@
-import Link from "next/link";
 import ProductCard from "./products/ProductCard";
 import { GetProduct } from "@/actions/product/get-products";
 

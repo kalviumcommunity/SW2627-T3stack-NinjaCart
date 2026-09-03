@@ -2,19 +2,18 @@
 
 import { prisma } from "@/lib/prisma";
 
-export async function GetProduct() {
-  const product = await prisma.product.findMany({
+export async function GetProductById(id: string) {
+  const product = await prisma.product.findUnique({
     where: {
-      quantity: {
-        gt: 0,
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
+      id,
     },
   });
 
-  return product.map((product) => ({
+  if (!product) {
+    return null;
+  }
+
+  return {
     id: product.id,
     name: product.name,
     type: product.type,
@@ -22,5 +21,5 @@ export async function GetProduct() {
     description: product.description,
     quantity: product.quantity,
     imageUrl: product.imageUrl,
-  }));
+  };
 }
